@@ -30,7 +30,7 @@
         <div class='col-md-12'>
 
             
-            <form method="POST">
+            <form method="POST" class='mt-5' >
                 {% csrf_token %}
                 <input type="hidden" id="items" name="items">
                 <div class="form-row">
@@ -60,6 +60,12 @@
                     <label for="inputZip">Zip</label>
                     <input type="text" class="form-control" id="zipcode" name="zipcode">
                   </div>
+
+                  <div class="form-group col-md-2">
+                    <label for="inputZip">Amount to be pain: </label>
+                    <input readonly="" type="text" class="form-control" id="total" name="total">
+                  </div>
+
                 </div>
                 
                 <button type="submit" class="btn btn-primary">Place Order</button>
@@ -77,13 +83,32 @@
     } else {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
+
+    let total = 0;
     for (item in cart) {
       let name = cart[item][1];
       let quantity = cart[item][0];
+      let price = cart[item][2];
+      total = total + cart[item][2];
 
-      itemString = `<li class="list-group-item">${name}-${quantity}</li>`;
+      itemString = `
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-column">
+          <span class="fw-bold text-dark" style="font-size: 1.1rem;">${name}</span>
+          <small class="text-muted">Quantity: ${quantity}</small>
+        </div>
+        <span class="fw-bold text-success" style="font-size: 1.1rem;">$${price}</span>
+      </li>`;
+
       $("#item_list").append(itemString);
     }
+    totalprice = `
+      <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+        <strong class="text-dark" style="font-size: 1.2rem;">Total:</strong>
+        <strong class="text-primary" style="font-size: 1.2rem;">$${total.toFixed(2)}</strong>
+      </li>`;
+    $('#total').val(total);
+    $("#item_list").append(totalprice);
     $('#items').val(JSON.stringify(cart));
   </script>
 </html>
